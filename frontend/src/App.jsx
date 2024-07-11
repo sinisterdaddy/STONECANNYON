@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { FaPaperclip, FaArrowRight } from 'react-icons/fa';
 import "./App.css";
-import logo from './path/to/your/logo.png'; // Update this path to the correct logo path
+import logo from './logo.png'; // Update this path to the correct logo path
 
 function App() {
   const [message, setMessage] = useState("");
@@ -56,7 +56,7 @@ function App() {
   };
 
   const sendRequest = (payload) => {
-    fetch("http://localhost:8080/ai", {
+    fetch("https://what-do-you-need.onrender.com/ai", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
