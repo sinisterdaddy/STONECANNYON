@@ -9,11 +9,14 @@ function App() {
   const [isTyping, setIsTyping] = useState(false);
   const [image, setImage] = useState(null);
 
-  // Clear state on component mount
+  // Clear state on component mount if sessionStorage flag is not set
   useEffect(() => {
-    setMessage("");
-    setChats([]);
-    setImage(null);
+    if (!sessionStorage.getItem('chatInitialized')) {
+      setMessage("");
+      setChats([]);
+      setImage(null);
+      sessionStorage.setItem('chatInitialized', 'true');
+    }
   }, []);
 
   const chat = async (e) => {
