@@ -49,7 +49,7 @@ function App() {
   };
 
   const sendRequest = (payload) => {
-    fetch("http://localhost:8080/ai", {
+    fetch("https://what-do-you-need.onrender.com/ai", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
