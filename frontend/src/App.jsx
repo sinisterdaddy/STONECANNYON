@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { FaPaperclip, FaArrowRight } from 'react-icons/fa';
 import "./App.css";
+import logo from './logo.jpg';
 
 function App() {
   const [message, setMessage] = useState("");
@@ -14,49 +16,30 @@ function App() {
     setIsTyping(true);
 
     let msgs = chats;
-    msgs.push({ role: "user", content: message });
-    setChats([...msgs]);
-
-    const sendRequest = (payload) => {
-      fetch("http://localhost:8080/ai", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          msgs.push({ role: "bot", content: data.content });
-          setChats([...msgs]);
-          setIsTyping(false);
-        })
-        .catch((error) => {
-          console.log("Fetch error:", error);
-          setIsTyping(false);
-        });
-    };
 
     if (image) {
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result.split(",")[1];
+        const userMsg = { role: "user", content: message, image: reader.result };
+        msgs.push(userMsg);
+        setChats([...msgs]);
+
         const payload = {
           query: message,
-          image_url: base64String
+          image_url: base64String,
         };
         sendRequest(payload);
       };
       reader.readAsDataURL(image);
     } else {
+      const userMsg = { role: "user", content: message, image: null };
+      msgs.push(userMsg);
+      setChats([...msgs]);
+
       const payload = {
         query: message,
-        image_url: null
+        image_url: null,
       };
       sendRequest(payload);
     }
@@ -65,20 +48,53 @@ function App() {
     setImage(null);
   };
 
+  const sendRequest = (payload) => {
+    fetch("http://localhost:8080/ai", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        let msgs = chats;
+        const botMsg = { role: "bot", content: data.content, image: null };
+        msgs.push(botMsg);
+        setChats([...msgs]);
+        setIsTyping(false);
+      })
+      .catch((error) => {
+        console.log("Fetch error:", error);
+        setIsTyping(false);
+      });
+  };
+
   return (
     <main>
-      <h1>What do you need?</h1>
+      <header>
+        <img src={logo} alt="Stone Canyon Logo" className="logo" />
+        <h1>Welcome to Stone Canyon Support</h1>
+      </header>
 
       <section>
         {chats && chats.length
           ? chats.map((chat, index) => (
-              <p key={index} className={chat.role === "user" ? "user_msg" : "bot_msg"}>
-                <span>
-                  <b>{chat.role.toUpperCase()}</b>
-                </span>
-                <span>:</span>
-                <span>{chat.content}</span>
-              </p>
+              <div key={index} className={`chat-bubble ${chat.role}`}>
+                <div className="chat-content">
+                  <span>
+                    <b>{chat.role.toUpperCase()}</b>
+                  </span>
+                  <span>:</span>
+                  <span>{chat.content}</span>
+                  {chat.image && <img src={chat.image} alt="User provided" className="chat-image" />}
+                </div>
+              </div>
             ))
           : ""}
       </section>
@@ -89,20 +105,34 @@ function App() {
         </p>
       </div>
 
-      <form onSubmit={chat}>
+      <form onSubmit={chat} className="chat-form">
+        <label htmlFor="file-input" className="file-input-label">
+          <FaPaperclip />
+        </label>
         <input
-          type="text"
-          name="message"
-          value={message}
-          placeholder="Type a message here and hit Enter..."
-          onChange={(e) => setMessage(e.target.value)}
-        />
-        <input
+          id="file-input"
           type="file"
           accept="image/*"
           onChange={(e) => setImage(e.target.files[0])}
+          style={{ display: 'none' }}
         />
-        <button type="submit">Send</button>
+        <div className="text-input-container">
+          <input
+            type="text"
+            name="message"
+            value={message}
+            placeholder="Type a message here and hit Enter..."
+            onChange={(e) => setMessage(e.target.value)}
+          />
+          {image && (
+            <div className="image-preview">
+              <img src={URL.createObjectURL(image)} alt="Preview" className="preview-image" />
+            </div>
+          )}
+        </div>
+        <button type="submit">
+          <FaArrowRight />
+        </button>
       </form>
     </main>
   );
