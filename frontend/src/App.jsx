@@ -13,7 +13,7 @@ function App() {
   // Clear state on component mount if sessionStorage flag is not set
   useEffect(() => {
     const resetChat = async () => {
-      await fetch("http://your-backend-url/reset", {
+      await fetch("https://what-do-you-need.onrender.com/reset", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
