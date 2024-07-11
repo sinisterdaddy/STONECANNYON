@@ -3,6 +3,7 @@ import { FaPaperclip, FaArrowRight } from 'react-icons/fa';
 import "./App.css";
 import logo from './logo.jpg'; // Update this path to the correct logo path
 
+
 function App() {
   const [message, setMessage] = useState("");
   const [chats, setChats] = useState([]);
@@ -11,12 +12,19 @@ function App() {
 
   // Clear state on component mount if sessionStorage flag is not set
   useEffect(() => {
-    if (!sessionStorage.getItem('chatInitialized')) {
-      setMessage("");
-      setChats([]);
-      setImage(null);
-      sessionStorage.setItem('chatInitialized', 'true');
-    }
+    const resetChat = async () => {
+      await fetch("http://your-backend-url/reset", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    };
+
+    resetChat();
+    setMessage("");
+    setChats([]);
+    setImage(null);
   }, []);
 
   const chat = async (e) => {
