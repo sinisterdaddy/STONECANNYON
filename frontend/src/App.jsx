@@ -1,13 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaPaperclip, FaArrowRight } from 'react-icons/fa';
 import "./App.css";
-import logo from './logo.jpg';
+import logo from './path/to/your/logo.png'; // Update this path to the correct logo path
 
 function App() {
   const [message, setMessage] = useState("");
   const [chats, setChats] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [image, setImage] = useState(null);
+
+  // Clear state on component mount
+  useEffect(() => {
+    setMessage("");
+    setChats([]);
+    setImage(null);
+  }, []);
 
   const chat = async (e) => {
     e.preventDefault();
@@ -49,7 +56,7 @@ function App() {
   };
 
   const sendRequest = (payload) => {
-    fetch("https://what-do-you-need.onrender.com/ai", {
+    fetch("http://localhost:8080/ai", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
