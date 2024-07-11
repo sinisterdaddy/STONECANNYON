@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { FaPaperclip, FaArrowRight } from 'react-icons/fa';
 import "./App.css";
-import logo from './logo.png'; // Update this path to the correct logo path
+import logo from './logo.jpg'; // Update this path to the correct logo path
 
 function App() {
   const [message, setMessage] = useState("");
