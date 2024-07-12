@@ -4,11 +4,26 @@ import "./App.css";
 import logo from './logo.jpg'; // Update this path to the correct logo path
 
 
+import { useState, useEffect } from "react";
+import { FaPaperclip, FaArrowRight } from 'react-icons/fa';
+import "./App.css";
+import logo from './logo.jpg';
+
 function App() {
   const [message, setMessage] = useState("");
   const [chats, setChats] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [image, setImage] = useState(null);
+
+  // Function to send the initial bot message
+  const sendInitialBotMessage = () => {
+    const initialMessage = {
+      role: "bot",
+      content: "I am Stone Canyon bot, how may I help you?",
+      image: null
+    };
+    setChats([initialMessage]);
+  };
 
   // Clear state on component mount if sessionStorage flag is not set
   useEffect(() => {
@@ -25,6 +40,11 @@ function App() {
     setMessage("");
     setChats([]);
     setImage(null);
+
+    // Send initial bot message after a delay
+    setTimeout(() => {
+      sendInitialBotMessage();
+    }, 3000); // 3000 milliseconds = 3 seconds
   }, []);
 
   const chat = async (e) => {
@@ -157,3 +177,4 @@ function App() {
 }
 
 export default App;
+
