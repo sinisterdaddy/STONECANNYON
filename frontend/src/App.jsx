@@ -13,7 +13,7 @@ function App() {
   const sendInitialBotMessage = () => {
     const initialMessage = {
       role: "bot",
-      content: "I am Stone Canyon bot. You can ask me anything about our services, products, or support. How may I help you today?",
+      content: "I am Stone Canyon bot, how may I help you?",
       image: null
     };
     setChats([initialMessage]);
@@ -107,6 +107,19 @@ function App() {
       });
   };
 
+  const resetChat = async () => {
+    await fetch("https://what-do-you-need.onrender.com/reset", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    setMessage("");
+    setChats([]);
+    setImage(null);
+    sendInitialBotMessage();
+  };
+
   return (
     <main>
       <header>
@@ -166,9 +179,9 @@ function App() {
           <FaArrowRight />
         </button>
       </form>
+      <button className="clear-chat" onClick={resetChat}>Clear Chat</button>
     </main>
   );
 }
 
 export default App;
-
