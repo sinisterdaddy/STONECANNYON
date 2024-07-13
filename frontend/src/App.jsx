@@ -13,7 +13,7 @@ function App() {
   const sendInitialBotMessage = () => {
     const initialMessage = {
       role: "bot",
-      content: "I am Stone Canyon bot, how may I help you?",
+      content: "I am Stone Canyon bot. You can ask me anything about our services, products, or support. How may I help you today?",
       image: null
     };
     setChats([initialMessage]);
