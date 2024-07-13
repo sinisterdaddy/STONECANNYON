@@ -73,7 +73,7 @@ function App() {
         query: message,
         image_url: null,
       };
-      sendRequest(payload);
+        sendRequest(payload);
     }
 
     setMessage("");
@@ -117,7 +117,11 @@ function App() {
     setMessage("");
     setChats([]);
     setImage(null);
-    sendInitialBotMessage();
+
+    // Send initial bot message after a delay
+    setTimeout(() => {
+      sendInitialBotMessage();
+    }, 500); // 500 milliseconds = 0.5 seconds
   };
 
   return (
