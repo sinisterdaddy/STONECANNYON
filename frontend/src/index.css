@@ -134,3 +134,17 @@ form.chat-form .file-input-label {
 .hide {
   display: none;
 }
+
+.clear-chat {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.clear-chat:hover {
+  background-color: #cc0000;
+}
