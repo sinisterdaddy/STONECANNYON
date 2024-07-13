@@ -8,21 +8,26 @@ function App() {
   const [chats, setChats] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [image, setImage] = useState(null);
+  const [userId, setUserId] = useState(null);
 
-  // Function to send the initial bot message
   const sendInitialBotMessage = () => {
     const initialMessage = {
       role: "bot",
-      content: "I am Stone Canyon bot. You can ask me anything about our services, products, or support. How may I help you today?",
+      content: "I am Stone Canyon bot, how may I help you?",
       image: null
     };
     setChats([initialMessage]);
   };
 
-  // Clear state on component mount if sessionStorage flag is not set
   useEffect(() => {
-    const resetChat = async () => {
-      await fetch("https://what-do-you-need.onrender.com/reset", {
+    const startSession = async () => {
+      const sessionResponse = await fetch("https://what-do-you-need.onrender.com/start_session", {
+        method: "POST",
+      });
+      const sessionData = await sessionResponse.json();
+      setUserId(sessionData.user_id);
+
+      await fetch(`https://what-do-you-need.onrender.com/reset/${sessionData.user_id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -30,12 +35,11 @@ function App() {
       });
     };
 
-    resetChat();
+    startSession();
     setMessage("");
     setChats([]);
     setImage(null);
 
-    // Send initial bot message after a delay
     setTimeout(() => {
       sendInitialBotMessage();
     }, 1000); // 1000 milliseconds = 1 seconds
@@ -73,7 +77,7 @@ function App() {
         query: message,
         image_url: null,
       };
-        sendRequest(payload);
+      sendRequest(payload);
     }
 
     setMessage("");
@@ -81,7 +85,7 @@ function App() {
   };
 
   const sendRequest = (payload) => {
-    fetch("https://what-do-you-need.onrender.com/ai", {
+    fetch(`https://what-do-you-need.onrender.com/ai/${userId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -108,7 +112,7 @@ function App() {
   };
 
   const resetChat = async () => {
-    await fetch("https://what-do-you-need.onrender.com/reset", {
+    await fetch(`https://what-do-you-need.onrender.com/reset/${userId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -118,7 +122,6 @@ function App() {
     setChats([]);
     setImage(null);
 
-    // Send initial bot message after a delay
     setTimeout(() => {
       sendInitialBotMessage();
     }, 500); // 500 milliseconds = 0.5 seconds
