@@ -112,7 +112,7 @@ function App() {
   };
 
   const resetChat = async () => {
-    await fetch(`hhttp://3.95.64.21:8080/reset/${userId}`, {
+    await fetch(`http://3.95.64.21:8080/reset/${userId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
