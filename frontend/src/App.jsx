@@ -21,13 +21,13 @@ function App() {
 
   useEffect(() => {
     const startSession = async () => {
-      const sessionResponse = await fetch("https://what-do-you-need.onrender.com/start_session", {
+      const sessionResponse = await fetch("http://3.95.64.21:8080/start_session", {
         method: "POST",
       });
       const sessionData = await sessionResponse.json();
       setUserId(sessionData.user_id);
 
-      await fetch(`https://what-do-you-need.onrender.com/reset/${sessionData.user_id}`, {
+      await fetch(`http://3.95.64.21:8080/reset/${sessionData.user_id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -85,7 +85,7 @@ function App() {
   };
 
   const sendRequest = (payload) => {
-    fetch(`https://what-do-you-need.onrender.com/ai/${userId}`, {
+    fetch(`http://3.95.64.21:8080/ai/${userId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -112,7 +112,7 @@ function App() {
   };
 
   const resetChat = async () => {
-    await fetch(`https://what-do-you-need.onrender.com/reset/${userId}`, {
+    await fetch(`http://3.95.64.21:8080/reset/${userId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
