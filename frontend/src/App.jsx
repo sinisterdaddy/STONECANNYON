@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { FaPaperclip, FaArrowRight } from 'react-icons/fa';
 import "./App.css";
 import logo from './logo.jpg';
-import fetch from 'node-fetch';
-import https from 'https';
 
 function App() {
   const [message, setMessage] = useState("");
@@ -11,10 +9,6 @@ function App() {
   const [isTyping, setIsTyping] = useState(false);
   const [image, setImage] = useState(null);
   const [userId, setUserId] = useState(null);
-
-  const agent = new https.Agent({  
-    rejectUnauthorized: false
-  });
 
   const sendInitialBotMessage = () => {
     const initialMessage = {
@@ -27,27 +21,30 @@ function App() {
 
   useEffect(() => {
     const startSession = async () => {
-      const sessionResponse = await fetch("http://3.95.64.21:8080/start_session", {
-        method: "POST",
-        agent: agent
-      });
-      const sessionData = await sessionResponse.json();
-      setUserId(sessionData.user_id);
+      try {
+        // Ignore SSL for development (note: this approach won't work in the browser; it's for Node.js or certain frameworks)
+        const sessionResponse = await fetch("http://3.95.64.21:8080/start_session", {
+          method: "POST",
+          mode: 'no-cors', // Add this to bypass CORS issues in the development environment
+        });
+        const sessionData = await sessionResponse.json();
+        setUserId(sessionData.user_id);
 
-      await fetch(`http://3.95.64.21:8080/reset/${sessionData.user_id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        agent: agent
-      });
+        await fetch(`http://3.95.64.21:8080/reset/${sessionData.user_id}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      } catch (error) {
+        console.error("Session initiation failed:", error);
+      }
     };
 
     startSession();
     setMessage("");
     setChats([]);
     setImage(null);
-
     setTimeout(() => {
       sendInitialBotMessage();
     }, 1000); // 1000 milliseconds = 1 second
@@ -55,10 +52,8 @@ function App() {
 
   const chat = async (e) => {
     e.preventDefault();
-
     if (!message && !image) return;
     setIsTyping(true);
-
     let msgs = chats;
 
     if (image) {
@@ -68,7 +63,6 @@ function App() {
         const userMsg = { role: "user", content: message, image: reader.result };
         msgs.push(userMsg);
         setChats([...msgs]);
-
         const payload = {
           query: message,
           image_url: base64String,
@@ -80,14 +74,12 @@ function App() {
       const userMsg = { role: "user", content: message, image: null };
       msgs.push(userMsg);
       setChats([...msgs]);
-
       const payload = {
         query: message,
         image_url: null,
       };
       sendRequest(payload);
     }
-
     setMessage("");
     setImage(null);
   };
@@ -99,7 +91,6 @@ function App() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
-      agent: agent
     })
       .then((response) => {
         if (!response.ok) {
@@ -126,12 +117,10 @@ function App() {
       headers: {
         "Content-Type": "application/json",
       },
-      agent: agent
     });
     setMessage("");
     setChats([]);
     setImage(null);
-
     setTimeout(() => {
       sendInitialBotMessage();
     }, 500); // 500 milliseconds = 0.5 seconds
@@ -143,7 +132,6 @@ function App() {
         <img src={logo} alt="Stone Canyon Logo" className="logo" />
         <h1>Welcome to Stone Canyon Support</h1>
       </header>
-
       <section>
         {chats && chats.length
           ? chats.map((chat, index) => (
@@ -160,13 +148,11 @@ function App() {
             ))
           : ""}
       </section>
-
       <div className={isTyping ? "" : "hide"}>
         <p>
           <i>{isTyping ? "Typing..." : ""}</i>
         </p>
       </div>
-
       <form onSubmit={chat} className="chat-form">
         <label htmlFor="file-input" className="file-input-label">
           <FaPaperclip />
