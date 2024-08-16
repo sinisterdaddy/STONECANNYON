@@ -22,15 +22,23 @@ function App() {
   useEffect(() => {
     const startSession = async () => {
       try {
-        // Ignore SSL for development (note: this approach won't work in the browser; it's for Node.js or certain frameworks)
+        // Make sure to use HTTP since you want to avoid mixed content errors
         const sessionResponse = await fetch("http://3.95.64.21:8080/start_session", {
           method: "POST",
-          mode: 'no-cors', // Add this to bypass CORS issues in the development environment
+          // 'no-cors' mode can be used to avoid CORS issues, but it limits response access
+          mode: 'no-cors',
         });
-        const sessionData = await sessionResponse.json();
-        setUserId(sessionData.user_id);
 
-        await fetch(`http://3.95.64.21:8080/reset/${sessionData.user_id}`, {
+        // Since 'no-cors' mode is used, you cannot access the sessionData directly
+        // However, in a real scenario, you would want to remove 'no-cors' and switch to HTTPS to handle it securely
+        // const sessionData = await sessionResponse.json();
+        // setUserId(sessionData.user_id);
+
+        // Placeholder for now due to 'no-cors'
+        const dummyUserId = '12345';
+        setUserId(dummyUserId);
+
+        await fetch(`http://3.95.64.21:8080/reset/${dummyUserId}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
