@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { FaPaperclip, FaArrowRight } from 'react-icons/fa';
 import "./App.css";
 import logo from './logo.jpg';
+import fetch from 'node-fetch';
+import https from 'https';
 
 function App() {
   const [message, setMessage] = useState("");
@@ -9,6 +11,10 @@ function App() {
   const [isTyping, setIsTyping] = useState(false);
   const [image, setImage] = useState(null);
   const [userId, setUserId] = useState(null);
+
+  const agent = new https.Agent({  
+    rejectUnauthorized: false
+  });
 
   const sendInitialBotMessage = () => {
     const initialMessage = {
@@ -23,6 +29,7 @@ function App() {
     const startSession = async () => {
       const sessionResponse = await fetch("http://3.95.64.21:8080/start_session", {
         method: "POST",
+        agent: agent
       });
       const sessionData = await sessionResponse.json();
       setUserId(sessionData.user_id);
@@ -32,6 +39,7 @@ function App() {
         headers: {
           "Content-Type": "application/json",
         },
+        agent: agent
       });
     };
 
@@ -42,7 +50,7 @@ function App() {
 
     setTimeout(() => {
       sendInitialBotMessage();
-    }, 1000); // 1000 milliseconds = 1 seconds
+    }, 1000); // 1000 milliseconds = 1 second
   }, []);
 
   const chat = async (e) => {
@@ -91,6 +99,7 @@ function App() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
+      agent: agent
     })
       .then((response) => {
         if (!response.ok) {
@@ -117,6 +126,7 @@ function App() {
       headers: {
         "Content-Type": "application/json",
       },
+      agent: agent
     });
     setMessage("");
     setChats([]);
