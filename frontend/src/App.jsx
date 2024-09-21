@@ -23,7 +23,7 @@ function App() {
     const startSession = async () => {
       try {
         // Make sure to use HTTP since you want to avoid mixed content errors
-        const sessionResponse = await fetch("http://3.95.64.21:8080/start_session", {
+        const sessionResponse = await fetch("https://what-do-you-need.onrender.com/start_session", {
           method: "POST",
           // 'no-cors' mode can be used to avoid CORS issues, but it limits response access
           mode: 'no-cors',
@@ -38,7 +38,7 @@ function App() {
         const dummyUserId = '12345';
         setUserId(dummyUserId);
 
-        await fetch(`http://3.95.64.21:8080/reset/${dummyUserId}`, {
+        await fetch(`https://what-do-you-need.onrender.com/reset/${dummyUserId}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -93,7 +93,7 @@ function App() {
   };
 
   const sendRequest = (payload) => {
-    fetch(`http://3.95.64.21:8080/ai/${userId}`, {
+    fetch(`https://what-do-you-need.onrender.com/ai/${userId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -120,7 +120,7 @@ function App() {
   };
 
   const resetChat = async () => {
-    await fetch(`http://3.95.64.21:8080/reset/${userId}`, {
+    await fetch(`https://what-do-you-need.onrender.com/reset/${userId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
